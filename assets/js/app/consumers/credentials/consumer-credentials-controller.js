@@ -102,6 +102,7 @@
         $scope.deleteOAuth2 = deleteOAuth2
         $scope.deleteBasicAuthCredentials = deleteBasicAuthCredentials
         $scope.deleteHMACAuthCredentials = deleteHMACAuthCredentials
+        $scope.viewSignatureCredential = viewSignatureCredential
         $scope.deleteSignatureCredential = deleteSignatureCredential
         $scope.setActiveGroup = setActiveGroup;
         $scope.filterGroup = filterGroup;
@@ -303,6 +304,22 @@
             resolve: {
               _consumer: function () {
                 return $scope.consumer
+              }
+            }
+          });
+        }
+
+        function viewSignatureCredential(credential) {
+          $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'js/app/consumers/credentials/signature-credential-details-modal.html',
+            controller: 'SignatureCredentialDetailsController',
+            controllerAs: '$ctrl',
+            resolve: {
+              _cred: function () {
+                return credential;
               }
             }
           });
