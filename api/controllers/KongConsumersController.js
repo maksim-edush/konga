@@ -96,8 +96,6 @@ var KongConsumersController = {
       let basicAuths = [];
       let signatureCredentials = [];
 
-      sails.log("PLUGINS:services:consumerGroups")
-
       // ToDo: clean this up somehow
       if(_.get(nodeInfo, 'plugins.available_on_server.jwt')) {
         let jwtsRecs = await Kong.fetch(`/jwts`, req);
@@ -261,9 +259,6 @@ var KongConsumersController = {
     try {
 
       const nodeInfo = await Kong.info(req.connection);
-      sails.log.debug("KongConsumersController:routes:available_on_server", _.get(nodeInfo, 'plugins.available_on_server'));
-
-      sails.log("PLUGINS:services:consumerGroups", _.get(nodeInfo, 'plugins.available_on_server.jwt'))
 
       let jwts = [];
       let keyAuths = [];
