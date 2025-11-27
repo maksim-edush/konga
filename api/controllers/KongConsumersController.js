@@ -93,6 +93,7 @@ var KongConsumersController = {
       let hmacAuths = [];
       let oauth2 = [];
       let basicAuths = [];
+      let signatureCredentials = [];
 
       // ToDo: clean this up somehow
       if(_.get(nodeInfo, 'plugins.available_on_server.jwt')) {
@@ -108,6 +109,11 @@ var KongConsumersController = {
       if(_.get(nodeInfo, 'plugins.available_on_server.hmac-auth')) {
         let hmacAuthsRecs = await Kong.fetch(`/hmac-auths`, req);
         hmacAuths = _.filter(hmacAuthsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
+      }
+
+      if(_.get(nodeInfo, 'plugins.available_on_server.signature-verification')) {
+        let signatureCredentialsRecs = await Kong.fetch(`/signature-credentials`, req);
+        signatureCredentials = _.filter(signatureCredentialsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
       }
 
       if(_.get(nodeInfo, 'plugins.available_on_server.oauth2')) {
@@ -128,6 +134,7 @@ var KongConsumersController = {
       if(hmacAuths.length) consumerAuths.push('hmac-auth');
       if(oauth2.length) consumerAuths.push('oauth2');
       if(basicAuths.length) consumerAuths.push('basic-auth');
+      if(signatureCredentials.length) consumerAuths.push('signature-verification');
 
       sails.log("KongConsumersController:services:consumerAuths", consumerAuths)
 
@@ -164,7 +171,7 @@ var KongConsumersController = {
         let acl = _.find(service.plugins,item => item.name === 'acl');
         if(acl) service.acl = acl;
 
-        let authenticationPlugins = _.filter(service.plugins, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2'].indexOf(item.name) > -1);
+        let authenticationPlugins = _.filter(service.plugins, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2','signature-verification'].indexOf(item.name) > -1);
         authenticationPlugins = _.map(authenticationPlugins, item => item.name);
         sails.log("authenticationPlugins",authenticationPlugins);
         service.auths = authenticationPlugins;
@@ -271,6 +278,11 @@ var KongConsumersController = {
         hmacAuths = _.filter(hmacAuthsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
       }
 
+      if(_.get(nodeInfo, 'plugins.available_on_server.signature-verification')) {
+        let signatureCredentialsRecs = await Kong.fetch(`/signature-credentials`, req);
+        signatureCredentials = _.filter(signatureCredentialsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
+      }
+
       if(_.get(nodeInfo, 'plugins.available_on_server.oauth2')) {
         let oauth2Recs = await Kong.fetch(`/oauth2`, req);
         oauth2 = _.filter(oauth2Recs.data, item => _.get(item, 'consumer.id') === consumerId);
@@ -288,6 +300,7 @@ var KongConsumersController = {
       if(hmacAuths.length) consumerAuths.push('hmac-auth');
       if(oauth2.length) consumerAuths.push('oauth2');
       if(basicAuths.length) consumerAuths.push('basic-auth');
+      if(signatureCredentials.length) consumerAuths.push('signature-verification');
 
       sails.log("consumerAuths", consumerAuths)
 
@@ -336,7 +349,7 @@ var KongConsumersController = {
           // Add plugins to their respective service
           routes[index].plugins = plugins;
 
-          let authenticationPlugins = _.filter(plugins.data, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2'].indexOf(item.name) > -1);
+          let authenticationPlugins = _.filter(plugins.data, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2','signature-verification'].indexOf(item.name) > -1);
           authenticationPlugins = _.map(authenticationPlugins, item => item.name);
           sails.log("authenticationPlugins",authenticationPlugins);
           routes[index].auths = authenticationPlugins;

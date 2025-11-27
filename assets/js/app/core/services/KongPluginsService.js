@@ -81,6 +81,9 @@
                   "hmac-auth": {
                     description: "Add HMAC Authentication to your APIs"
                   },
+                  "signature-verification": {
+                    description: "Verify requests signed with signature credentials"
+                  },
                   "jwt": {
                     description: "Verify and authenticate JSON Web Tokens"
                   },
@@ -512,6 +515,11 @@
                 type: 'boolean',
                 value: false,
                 help: 'An optional boolean value telling the plugin to hide the credential to the upstream API server. It will be removed by Kong before proxying the request.'
+              }
+            },
+            "signature-verification": {
+              meta: {
+                description: 'Verify requests signed with signature credentials.'
               }
             },
             "oauth2": {

@@ -247,6 +247,9 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
           "jwt": {
             description: "Verify and authenticate JSON Web Tokens"
           },
+          "signature-verification": {
+            description: "Verify requests signed with signature credentials"
+          },
           "ldap-auth": {
             description: "Integrate Kong with a LDAP server"
           },

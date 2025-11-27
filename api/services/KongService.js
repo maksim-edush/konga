@@ -343,7 +343,7 @@ var KongService = {
       let acl = _.find(route.plugins,item => item.name === 'acl');
       if(acl) route.acl = acl;
 
-      let authenticationPlugins = _.filter(route.plugins, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2'].indexOf(item.name) > -1);
+      let authenticationPlugins = _.filter(route.plugins, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2','signature-verification'].indexOf(item.name) > -1);
       authenticationPlugins = _.map(authenticationPlugins, item => item.name);
       sails.log("authenticationPlugins",authenticationPlugins);
       route.auths = authenticationPlugins;

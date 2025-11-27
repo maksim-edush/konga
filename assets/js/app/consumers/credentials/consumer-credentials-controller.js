@@ -21,6 +21,7 @@
         $scope.basic_auth_credentials;
         $scope.hmac_auth_credentials;
         $scope.oauth2_credentials;
+        $scope.signature_credentials;
 
         $scope.credentialGroups = [
           {
@@ -34,6 +35,13 @@
             name: 'API KEYS',
             icon: 'mdi-key',
             fetchFunc: fetchKeys
+          },
+          {
+            id: 'signature-credential',
+            name: 'SIGNATURE',
+            icon: 'mdi-key-variant',
+            plugin: 'signature-verification',
+            fetchFunc: fetchSignatureCredentials
           },
           {
             id: 'hmac-auth',
@@ -59,7 +67,7 @@
 
         // Remove credentials that are not available on the server
         $scope.credentialGroups = _.filter($scope.credentialGroups, function (item) {
-          return $scope.availablePlugins[item.id];
+          return $scope.availablePlugins[item.plugin || item.id];
         })
 
         // Fetch the remaining ones
@@ -75,11 +83,13 @@
         $scope.manageBasicAuth = manageBasicAuth
         $scope.createOAuth2 = createOAuth2
         $scope.createHMAC = createHMAC
+        $scope.createSignatureCredential = createSignatureCredential
         $scope.deleteKey = deleteKey
         $scope.deleteJWT = deleteJWT
         $scope.deleteOAuth2 = deleteOAuth2
         $scope.deleteBasicAuthCredentials = deleteBasicAuthCredentials
         $scope.deleteHMACAuthCredentials = deleteHMACAuthCredentials
+        $scope.deleteSignatureCredential = deleteSignatureCredential
         $scope.setActiveGroup = setActiveGroup;
         $scope.filterGroup = filterGroup;
 
@@ -92,6 +102,24 @@
           return group.id === $scope.activeGroup;
         }
 
+
+        function deleteSignatureCredential($index, credentials) {
+          DialogService.confirm(
+            "Delete Credentials", "Really want to delete the selected credentials?",
+            ['No don\'t', 'Yes! delete it'],
+            function accept() {
+              ConsumerService
+                .removeCredential($scope.consumer.id, 'signature-credential', credentials.id)
+                .then(
+                  function onSuccess() {
+                    MessageService.success('Credentials deleted successfully');
+                    fetchSignatureCredentials()
+                  }
+                )
+
+            }, function decline() {
+            })
+        }
 
         function deleteHMACAuthCredentials($index, credentials) {
           DialogService.confirm(
@@ -251,6 +279,22 @@
           });
         }
 
+        function createSignatureCredential() {
+          $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'js/app/consumers/credentials/create-signature-credential-modal.html',
+            controller: 'CreateSignatureCredentialController',
+            controllerAs: '$ctrl',
+            resolve: {
+              _consumer: function () {
+                return $scope.consumer
+              }
+            }
+          });
+        }
+
         function createJWT() {
           $uibModal.open({
             animation: true,
@@ -300,6 +344,14 @@
             })
         }
 
+        function fetchSignatureCredentials() {
+          ConsumerService.loadCredentials($scope.consumer.id, 'signature-credential')
+            .then(function (res) {
+              console.log("FETCH SIGNATURE CREDS =>", res.data);
+              $scope.signature_credentials = res.data;
+            })
+        }
+
         function fetchKeys() {
           ConsumerService.loadCredentials($scope.consumer.id, 'key-auth')
             .then(function (res) {
@@ -336,6 +388,10 @@
 
         $scope.$on('consumer.key.created', function (ev, group) {
           fetchKeys()
+        })
+
+        $scope.$on('consumer.signature-credential.created', function (ev, group) {
+          fetchSignatureCredentials()
         })
 
         $scope.$on('consumer.oauth2.created', function (ev, group) {

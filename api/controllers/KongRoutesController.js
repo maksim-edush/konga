@@ -20,6 +20,7 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
     let keyAuthPlugin;
     let hmacAuthPlugin;
     let oauth2Plugin;
+    let signatureVerificationPlugin;
 
 
     sails.log("KongRoutesController:consumers called");
@@ -43,6 +44,7 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
     keyAuthPlugin = _.filter(plugins.data, item => item.name === 'key-auth')[0];
     hmacAuthPlugin = _.filter(plugins.data, item => item.name === 'hmac-auth')[0];
     oauth2Plugin = _.filter(plugins.data, item => item.name === 'oauth2')[0];
+    signatureVerificationPlugin = _.filter(plugins.data, item => item.name === 'signature-verification')[0];
 
     sails.log("routeAclPlugin",routeAclPlugin)
     sails.log("jwtPlugin",jwtPlugin)
@@ -50,9 +52,10 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
     sails.log("keyAuthPlugin",keyAuthPlugin)
     sails.log("hmacAuthPlugin",hmacAuthPlugin)
     sails.log("oauth2Plugin",oauth2Plugin)
+    sails.log("signatureVerificationPlugin",signatureVerificationPlugin)
 
     let aclConsumerIds;
-    let authenticationPlugins = _.filter(plugins.data, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2'].indexOf(item.name) > -1);
+    let authenticationPlugins = _.filter(plugins.data, item => ['jwt','basic-auth','key-auth','hmac-auth','oauth2','signature-verification'].indexOf(item.name) > -1);
     authenticationPlugins = _.map(authenticationPlugins, item => item.name);
     sails.log("authenticationPlugins",authenticationPlugins);
 
@@ -90,13 +93,14 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
     }
 
 
-    let jwts, keyAuths, hmacAuths, oauth2, basicAuths
+    let jwts, keyAuths, hmacAuths, oauth2, basicAuths, signatureCredentials
 
     if(jwtPlugin) jwts = await KongService.fetch(`/jwts`, req);
     if(keyAuthPlugin) keyAuths = await KongService.fetch(`/key-auths`, req);
     if(hmacAuthPlugin) hmacAuths = await KongService.fetch(`/hmac-auths`, req);
     if(oauth2Plugin) oauth2 = await KongService.fetch(`/oauth2`, req);
     if(basicAuthPlugin) basicAuths = await KongService.fetch(`/basic-auths`, req);
+    if(signatureVerificationPlugin) signatureCredentials = await KongService.fetch(`/signature-credentials`, req);
 
     sails.log("jwts",jwts)
     sails.log("keyAuths",keyAuths)
@@ -110,12 +114,14 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
     let hmacAuthConsumerIds = hmacAuths ? _.map(hmacAuths.data, item => item.consumer.id) : [];
     let oauth2ConsumerIds = oauth2 ? _.map(oauth2.data, item => item.consumer.id) : [];
     let basicAuthConsumerIds = basicAuths ? _.map(basicAuths.data, item => item.consumer.id) : [];
+    let signatureCredentialConsumerIds = signatureCredentials ? _.map(signatureCredentials.data, item => item.consumer.id) : [];
 
     sails.log("jwtConsumerIds",jwtConsumerIds)
     sails.log("keyAuthConsumerIds",keyAuthConsumerIds)
     sails.log("hmacAuthConsumerIds",hmacAuthConsumerIds)
     sails.log("oauth2ConsumerIds",oauth2ConsumerIds)
     sails.log("basicAuthConsumerIds",basicAuthConsumerIds)
+    sails.log("signatureCredentialConsumerIds",signatureCredentialConsumerIds)
 
     let consumerIds;
     let authenticationPluginsConsumerIds = _.uniq([
@@ -123,7 +129,8 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
       ...keyAuthConsumerIds,
       ...hmacAuthConsumerIds,
       ...oauth2ConsumerIds,
-      ...basicAuthConsumerIds
+      ...basicAuthConsumerIds,
+      ...signatureCredentialConsumerIds
     ]);
 
 
@@ -165,6 +172,9 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
         if(basicAuths && _.filter(basicAuths.data,item => item.consumer.id === consumer.id).length) {
           plugins.push('basic-auth')
         }
+        if(signatureCredentials && _.filter(signatureCredentials.data,item => item.consumer.id === consumer.id).length) {
+          plugins.push('signature-verification')
+        }
         consumer.plugins = plugins;
 
       })
@@ -180,4 +190,3 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
   }
 
 });
-
