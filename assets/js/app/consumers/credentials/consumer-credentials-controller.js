@@ -64,11 +64,24 @@
         ]
 
         $scope.availablePlugins = $rootScope.Gateway.plugins.available_on_server;
+        console.log("Available plugins on server =>", $scope.availablePlugins);
 
         // Remove credentials that are not available on the server
         $scope.credentialGroups = _.filter($scope.credentialGroups, function (item) {
-          return $scope.availablePlugins[item.plugin || item.id];
+          var available = $scope.availablePlugins[item.plugin || item.id];
+          // Always allow signature-credential to render so we can see it even if Kong does not advertise the plugin
+          if(item.id === 'signature-credential') {
+            if(!available) {
+              console.log("signature-credential kept even though plugin not advertised on server");
+            }
+            return true;
+          }
+          if(!available) {
+            console.log("Credential group filtered out (plugin not available):", item.id, "->", item.plugin || item.id);
+          }
+          return available;
         })
+        console.log("Credential groups after availability filter =>", _.map($scope.credentialGroups, 'id'));
 
         // Fetch the remaining ones
         $scope.credentialGroups.forEach(function (item) {

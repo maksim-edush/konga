@@ -87,6 +87,7 @@ var KongConsumersController = {
     try {
 
       const nodeInfo = await Kong.info(req.connection);
+      sails.log.debug("KongConsumersController:services:available_on_server", _.get(nodeInfo, 'plugins.available_on_server'));
 
       let jwts = [];
       let keyAuths = [];
@@ -94,6 +95,8 @@ var KongConsumersController = {
       let oauth2 = [];
       let basicAuths = [];
       let signatureCredentials = [];
+
+      sails.log("PLUGINS:services:consumerGroups")
 
       // ToDo: clean this up somehow
       if(_.get(nodeInfo, 'plugins.available_on_server.jwt')) {
@@ -111,9 +114,12 @@ var KongConsumersController = {
         hmacAuths = _.filter(hmacAuthsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
       }
 
-      if(_.get(nodeInfo, 'plugins.available_on_server.signature-verification')) {
+      try {
+        // Attempt fetch even if plugin not advertised in available_on_server (custom plugin scenarios)
         let signatureCredentialsRecs = await Kong.fetch(`/signature-credentials`, req);
         signatureCredentials = _.filter(signatureCredentialsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
+      } catch (e) {
+        sails.log.debug("KongConsumersController:services:signature-credentials fetch failed", e.statusCode || e.message || e);
       }
 
       if(_.get(nodeInfo, 'plugins.available_on_server.oauth2')) {
@@ -255,6 +261,9 @@ var KongConsumersController = {
     try {
 
       const nodeInfo = await Kong.info(req.connection);
+      sails.log.debug("KongConsumersController:routes:available_on_server", _.get(nodeInfo, 'plugins.available_on_server'));
+
+      sails.log("PLUGINS:services:consumerGroups", _.get(nodeInfo, 'plugins.available_on_server.jwt'))
 
       let jwts = [];
       let keyAuths = [];
@@ -278,9 +287,12 @@ var KongConsumersController = {
         hmacAuths = _.filter(hmacAuthsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
       }
 
-      if(_.get(nodeInfo, 'plugins.available_on_server.signature-verification')) {
+      try {
+        // Attempt fetch even if plugin not advertised in available_on_server (custom plugin scenarios)
         let signatureCredentialsRecs = await Kong.fetch(`/signature-credentials`, req);
         signatureCredentials = _.filter(signatureCredentialsRecs.data, item => _.get(item, 'consumer.id') === consumerId);
+      } catch (e) {
+        sails.log.debug("KongConsumersController:routes:signature-credentials fetch failed", e.statusCode || e.message || e);
       }
 
       if(_.get(nodeInfo, 'plugins.available_on_server.oauth2')) {
