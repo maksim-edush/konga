@@ -1,3 +1,6 @@
+@use 'globals' as *;
+@use 'sass:math';
+
 $animationLength: 1.5s;
 $animationRadius: 12px;
 $dotSize: 8px;
@@ -28,7 +31,7 @@ $dotSize: 8px;
 
 .dot_2 {
   animation: animateDot2 $animationLength linear infinite;
-  animation-delay: $animationLength / 3;
+  animation-delay: math.div($animationLength, 3);
   left: $animationRadius * 2;
 }
 
@@ -39,7 +42,7 @@ $dotSize: 8px;
 
 .dot_4 {
   animation: animateDot4 $animationLength linear infinite;
-  animation-delay: $animationLength / 3;
+  animation-delay: math.div($animationLength, 3);
   left: $animationRadius * 2;
 }
 

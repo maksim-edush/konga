@@ -1,17 +1,19 @@
 
-/*!
+/*! 
  * bootswatch v3.3.6
  * Homepage: http://bootswatch.com
  * Copyright 2012-2016 Thomas Park
  * Licensed under MIT
  * Based on Bootstrap
 */
-/*!
+/*! 
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+@use 'globals' as *;
+@use 'sass:color';
 html {
   font-family: $font-family-base;
   -ms-text-size-adjust: 100%;
@@ -3179,19 +3181,19 @@ fieldset[disabled] .btn-primary.focus {
 .btn-success:focus,
 .btn-success.focus {
   color: #ffffff;
-  background-color: darken($brand-success,30%);
+  background-color: color.adjust($brand-success, $lightness: -30%);
   border-color: rgba(0, 0, 0, 0);
 }
 .btn-success:hover {
   color: #ffffff;
-  background-color: darken($brand-success,30%);
+  background-color: color.adjust($brand-success, $lightness: -30%);
   border-color: rgba(0, 0, 0, 0);
 }
 .btn-success:active,
 .btn-success.active,
 .open > .dropdown-toggle.btn-success {
   color: #ffffff;
-  background-color: darken($brand-success,30%);
+  background-color: color.adjust($brand-success, $lightness: -30%);
   border-color: rgba(0, 0, 0, 0);
 }
 .btn-success:active:hover,
@@ -3204,7 +3206,7 @@ fieldset[disabled] .btn-primary.focus {
 .btn-success.active.focus,
 .open > .dropdown-toggle.btn-success.focus {
   color: #ffffff;
-  background-color: darken($brand-success,30%);
+  background-color: color.adjust($brand-success, $lightness: -30%);
   border-color: rgba(0, 0, 0, 0);
 }
 .btn-success:active,
@@ -6821,13 +6823,13 @@ button.close {
 }
 .btn-primary:hover,
 .btn-primary:active:hover {
-  background-color: darken($brand-primary,13%);
+  background-color: color.adjust($brand-primary, $lightness: -13%);
 }
 .btn-primary:active {
   background-color: $brand-primary;
-  background-image: -webkit-radial-gradient(circle, darken($brand-primary,13%) 10%, $brand-primary 11%);
-  background-image: -o-radial-gradient(circle, darken($brand-primary,13%) 10%, $brand-primary 11%);
-  background-image: radial-gradient(circle, darken($brand-primary,13%) 10%, $brand-primary 11%);
+  background-image: -webkit-radial-gradient(circle, color.adjust($brand-primary, $lightness: -13%) 10%, $brand-primary 11%);
+  background-image: -o-radial-gradient(circle, color.adjust($brand-primary, $lightness: -13%) 10%, $brand-primary 11%);
+  background-image: radial-gradient(circle, color.adjust($brand-primary, $lightness: -13%) 10%, $brand-primary 11%);
   background-repeat: no-repeat;
   -webkit-background-size: 1000% 1000%;
   background-size: 1000%;
@@ -6844,13 +6846,13 @@ button.close {
 }
 .btn-success:hover,
 .btn-success:active:hover {
-  background-color: darken($brand-success,13%);
+  background-color: color.adjust($brand-success, $lightness: -13%);
 }
 .btn-success:active {
   background-color: #39843c;
-  background-image: -webkit-radial-gradient(circle, darken($brand-success,13%) 10%, $brand-success 11%);
-  background-image: -o-radial-gradient(circle, darken($brand-success,13%) 10%, $brand-success 11%);
-  background-image: radial-gradient(circle, darken($brand-success,13%) 10%, $brand-success 11%);
+  background-image: -webkit-radial-gradient(circle, color.adjust($brand-success, $lightness: -13%) 10%, $brand-success 11%);
+  background-image: -o-radial-gradient(circle, color.adjust($brand-success, $lightness: -13%) 10%, $brand-success 11%);
+  background-image: radial-gradient(circle, color.adjust($brand-success, $lightness: -13%) 10%, $brand-success 11%);
   background-repeat: no-repeat;
   -webkit-background-size: 1000% 1000%;
   background-size: 1000%;
