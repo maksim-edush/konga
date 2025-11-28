@@ -35,6 +35,10 @@ var defaultModel = _.merge(_.cloneDeep(require('../base/Model')), {
       type: 'string',
       required: true
     },
+    skip_tls_verify: {
+      type: 'boolean',
+      defaultsTo: false
+    },
 
     // netdata_connection: {
     //   model: 'netdataconnection'
@@ -151,6 +155,7 @@ var defaultModel = _.merge(_.cloneDeep(require('../base/Model')), {
       "name": orig.name,
       "type": orig.type,
       "kong_admin_url": orig.kong_admin_url,
+      "skip_tls_verify": orig.skip_tls_verify,
       "health_checks": orig.health_checks,
       "health_check_details": orig.health_check_details,
     }, auth(orig))
