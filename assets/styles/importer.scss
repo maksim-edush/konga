@@ -1,21 +1,19 @@
-@import "mixins";
-
-@import 'variables';
-@import 'bootswatch';
-@import 'forms';
-@import 'components';
-@import 'bootstrap_over';
-@import 'angular';
-@import "animloader";
-@import "mdi";
-@import "login";
-@import "panels";
-@import "scrollbars";
-@import "top_nav";
-@import "side-nav";
-@import "animations";
-@import "tables";
-@import "bootbox";
+@use 'globals' as *;
+@use 'bootswatch';
+@use 'forms';
+@use 'components';
+@use 'bootstrap_over';
+@use 'angular';
+@use 'animloader';
+@use 'mdi';
+@use 'login';
+@use 'panels';
+@use 'scrollbars';
+@use 'top_nav';
+@use 'side-nav';
+@use 'animations';
+@use 'tables';
+@use 'bootbox';
 
 
 $color-footer-text: #999;
@@ -833,5 +831,4 @@ chips > div > input {
 //.padding{
 //  padding: 15px;
 //}
-
 

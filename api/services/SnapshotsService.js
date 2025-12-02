@@ -31,7 +31,8 @@ module.exports = {
       'key-auths': [],
       'hmac-auths': [],
       'jwts': [],
-      'oauth2': []
+      'oauth2': [],
+      'signature-credentials': []
     }
 
     try {
@@ -45,6 +46,7 @@ module.exports = {
       if(nodeInfo.plugins.enabled_in_cluster.indexOf('hmac-auth') < 0) { delete consumersCredentials['hmac-auths'] }
       if(nodeInfo.plugins.enabled_in_cluster.indexOf('jwt') < 0) { delete consumersCredentials['jwts'] }
       if(nodeInfo.plugins.enabled_in_cluster.indexOf('oauth2') < 0) { delete consumersCredentials['oauth2'] }
+      if(nodeInfo.plugins.enabled_in_cluster.indexOf('signature-verification') < 0) { delete consumersCredentials['signature-credentials'] }
 
 
       // Gather entities

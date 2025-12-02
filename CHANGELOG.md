@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.0](https://github.com/pantsel/konga/releases/tag/0.15.0)
+
+
 ## [0.14.9](https://github.com/pantsel/konga/releases/tag/0.14.9)
 * Fix security issue that allowed a user to escalate to admin status. (Kudos to [j3ssie](https://github.com/j3ssie)).
 * Fix XSS vulnerabity on alerts and notifications. (Kudos to [j3ssie](https://github.com/j3ssie)).

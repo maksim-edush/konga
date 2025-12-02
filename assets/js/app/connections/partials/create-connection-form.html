@@ -57,6 +57,15 @@
             <input type="url" ng-model="node.kong_admin_url" class="form-control" placeholder="The URL to Kong's {{node.type == 'default' ? 'admin' : 'Loopback'}} API" required="required">
             <div class="text-danger" ng-if="errors.kong_admin_url" data-ng-bind="errors.kong_admin_url"></div>
         </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label class="control-label">
+                    <input type="checkbox" ng-model="node.skip_tls_verify">
+                    Skip TLS certificate verification
+                </label>
+                <small class="help-block">Disable certificate verification when connecting over HTTPS (use only for trusted environments).</small>
+            </div>
+        </div>
 
         <div ng-switch="node.type">
 

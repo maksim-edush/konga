@@ -37,6 +37,22 @@ module.exports = {
 
             },
             {
+                name : "signature-credential",
+                fields : [
+                    {
+                        name : "client_id",
+                        description : "Optional client id to associate with the signature credential. If missing, the plugin will generate one.",
+                        type : "string"
+                    },
+                    {
+                        name : "client_secret",
+                        description : "Optional secret used for signature validation. If missing, the plugin will generate one.",
+                        type : "string"
+                    }
+                ]
+
+            },
+            {
                 name : "oauth2",
                 fields : [
                     {

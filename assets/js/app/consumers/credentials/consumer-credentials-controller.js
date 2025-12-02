@@ -21,6 +21,7 @@
         $scope.basic_auth_credentials;
         $scope.hmac_auth_credentials;
         $scope.oauth2_credentials;
+        $scope.signature_credentials;
 
         $scope.credentialGroups = [
           {
@@ -34,6 +35,13 @@
             name: 'API KEYS',
             icon: 'mdi-key',
             fetchFunc: fetchKeys
+          },
+          {
+            id: 'signature-credential',
+            name: 'SIGNATURE',
+            icon: 'mdi-key-variant',
+            plugin: 'signature-verification',
+            fetchFunc: fetchSignatureCredentials
           },
           {
             id: 'hmac-auth',
@@ -56,11 +64,24 @@
         ]
 
         $scope.availablePlugins = $rootScope.Gateway.plugins.available_on_server;
+        console.log("Available plugins on server =>", $scope.availablePlugins);
 
         // Remove credentials that are not available on the server
         $scope.credentialGroups = _.filter($scope.credentialGroups, function (item) {
-          return $scope.availablePlugins[item.id];
+          var available = $scope.availablePlugins[item.plugin || item.id];
+          // Always allow signature-credential to render so we can see it even if Kong does not advertise the plugin
+          if(item.id === 'signature-credential') {
+            if(!available) {
+              console.log("signature-credential kept even though plugin not advertised on server");
+            }
+            return true;
+          }
+          if(!available) {
+            console.log("Credential group filtered out (plugin not available):", item.id, "->", item.plugin || item.id);
+          }
+          return available;
         })
+        console.log("Credential groups after availability filter =>", _.map($scope.credentialGroups, 'id'));
 
         // Fetch the remaining ones
         $scope.credentialGroups.forEach(function (item) {
@@ -75,11 +96,14 @@
         $scope.manageBasicAuth = manageBasicAuth
         $scope.createOAuth2 = createOAuth2
         $scope.createHMAC = createHMAC
+        $scope.createSignatureCredential = createSignatureCredential
         $scope.deleteKey = deleteKey
         $scope.deleteJWT = deleteJWT
         $scope.deleteOAuth2 = deleteOAuth2
         $scope.deleteBasicAuthCredentials = deleteBasicAuthCredentials
         $scope.deleteHMACAuthCredentials = deleteHMACAuthCredentials
+        $scope.viewSignatureCredential = viewSignatureCredential
+        $scope.deleteSignatureCredential = deleteSignatureCredential
         $scope.setActiveGroup = setActiveGroup;
         $scope.filterGroup = filterGroup;
 
@@ -92,6 +116,24 @@
           return group.id === $scope.activeGroup;
         }
 
+
+        function deleteSignatureCredential($index, credentials) {
+          DialogService.confirm(
+            "Delete Credentials", "Really want to delete the selected credentials?",
+            ['No don\'t', 'Yes! delete it'],
+            function accept() {
+              ConsumerService
+                .removeCredential($scope.consumer.id, 'signature-credential', credentials.id)
+                .then(
+                  function onSuccess() {
+                    MessageService.success('Credentials deleted successfully');
+                    fetchSignatureCredentials()
+                  }
+                )
+
+            }, function decline() {
+            })
+        }
 
         function deleteHMACAuthCredentials($index, credentials) {
           DialogService.confirm(
@@ -251,6 +293,38 @@
           });
         }
 
+        function createSignatureCredential() {
+          $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'js/app/consumers/credentials/create-signature-credential-modal.html',
+            controller: 'CreateSignatureCredentialController',
+            controllerAs: '$ctrl',
+            resolve: {
+              _consumer: function () {
+                return $scope.consumer
+              }
+            }
+          });
+        }
+
+        function viewSignatureCredential(credential) {
+          $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'js/app/consumers/credentials/signature-credential-details-modal.html',
+            controller: 'SignatureCredentialDetailsController',
+            controllerAs: '$ctrl',
+            resolve: {
+              _cred: function () {
+                return credential;
+              }
+            }
+          });
+        }
+
         function createJWT() {
           $uibModal.open({
             animation: true,
@@ -300,6 +374,14 @@
             })
         }
 
+        function fetchSignatureCredentials() {
+          ConsumerService.loadCredentials($scope.consumer.id, 'signature-credential')
+            .then(function (res) {
+              console.log("FETCH SIGNATURE CREDS =>", res.data);
+              $scope.signature_credentials = res.data;
+            })
+        }
+
         function fetchKeys() {
           ConsumerService.loadCredentials($scope.consumer.id, 'key-auth')
             .then(function (res) {
@@ -336,6 +418,10 @@
 
         $scope.$on('consumer.key.created', function (ev, group) {
           fetchKeys()
+        })
+
+        $scope.$on('consumer.signature-credential.created', function (ev, group) {
+          fetchSignatureCredentials()
         })
 
         $scope.$on('consumer.oauth2.created', function (ev, group) {

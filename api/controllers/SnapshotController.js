@@ -124,7 +124,8 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
                     'basic-auths': 'basic-auth',
                     'key-auths': 'key-auth',
                     'hmac-auths': 'hmac-auth',
-                    'jwts': 'jwt'
+                    'jwts': 'jwt',
+                    'signature-credentials': 'signature-credential'
                   }
                   for (let key in consumer.credentials) {
                     makeResponseData(responseData, key);
@@ -665,4 +666,3 @@ module.exports = _.merge(_.cloneDeep(require('../base/Controller')), {
   }
 
 });
-

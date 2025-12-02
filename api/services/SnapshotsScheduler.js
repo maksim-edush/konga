@@ -115,7 +115,7 @@ module.exports = {
           })
 
 
-          var credentials = ["basic-auth", "key-auth", "hmac-auth", "jwt", "oauth2"]
+          var credentials = ["basic-auth", "key-auth", "hmac-auth", "jwt", "oauth2", "signature-credential"]
           credentials.forEach(function (credential) {
             consumerFns.push(function (cb) {
               KongService.listAllCb(node, '/consumers/' + consumer.id + '/' + credential, function (err, data) {

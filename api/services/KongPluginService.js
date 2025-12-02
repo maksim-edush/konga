@@ -1,7 +1,5 @@
 'use strict';
 
-var unirest = require("unirest")
-var async = require('async')
 var fs = require('fs')
 var path = require('path')
 var _ = require('lodash')
@@ -30,7 +28,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   addDynamicSSLPlugin: function (fds, req, res) {
-    return unirest.post(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    return KongService.buildRequest('post', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .headers({'Content-Type': 'multipart/form-data'})
       .field('name', req.body.name)
       .field('config.only_https', req.body['config.only_https'] || false)
@@ -44,7 +42,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   addCertificates: function (fds, req, res) {
-    var request = unirest.post(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    var request = KongService.buildRequest('post', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
 
     request.headers(KongService.headers(req.connection));
     request.field('snis', req.body['snis'] || '')
@@ -57,7 +55,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   updateCertificates: function (fds, req, res) {
-    var request = unirest.patch(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    var request = KongService.buildRequest('patch', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
     request.headers(KongService.headers(req.connection));
 
     request.field('snis', req.body['snis'] || '')
@@ -72,7 +70,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   addPlugin: function (req, res) {
-    return unirest.post(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    return KongService.buildRequest('post', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .send(req.body)
       .end(function (response) {
         if (response.error) return res.kongError(response)
@@ -82,7 +80,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
 
   createCb: function (req, res, cb) {
 
-    unirest.post(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('post', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .send(req.body)
       .end(function (response) {
         if (response.error) return cb(response)
@@ -117,7 +115,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   retrieve: function (req, res) {
-    unirest.get(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('get', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .end(function (response) {
         if (response.error) return res.kongError(response)
         return res.json(response.body)
@@ -125,7 +123,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   list: function (req, res) {
-    unirest.get(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('get', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .end(function (response) {
         if (response.error) return res.kongError(response)
         return res.json(response.body)
@@ -135,7 +133,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
 
   richList: function (req, res) {
     var _this = this;
-    unirest.get(req.connection.kong_admin_url + '/plugins/enabled')
+    KongService.buildRequest('get', req.connection.kong_admin_url + '/plugins/enabled', req.connection)
       .end(function (response) {
         if (response.error) return res.kongError(response)
 
@@ -148,7 +146,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   update: function (req, res) {
-    unirest.patch(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('patch', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .send(req.body)
       .end(function (response) {
         if (response.error) return res.kongError(response)
@@ -157,7 +155,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   updateCb: function (req, res, cb) {
-    unirest.patch(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('patch', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .send(req.body)
       .end(function (response) {
         if (response.error) return cb(response)
@@ -166,7 +164,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   updateOrCreate: function (req, res) {
-    unirest.put(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('put', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .send(req.body)
       .end(function (response) {
         if (response.error) return res.kongError(response)
@@ -175,7 +173,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   delete: function (req, res) {
-    unirest.delete(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('delete', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .end(function (response) {
         if (response.error) return res.kongError(response)
         return res.json(response.body)
@@ -183,7 +181,7 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
   },
 
   deleteCb: function (req, res, cb) {
-    unirest.delete(req.connection.kong_admin_url + req.url.replace('/kong', ''))
+    KongService.buildRequest('delete', req.connection.kong_admin_url + req.url.replace('/kong', ''), req.connection)
       .end(function (response) {
         if (response.error) return cb(response)
         return cb(null, response.body)
@@ -246,6 +244,9 @@ var KongPluginService = _.merge(_.cloneDeep(require('./KongService')), {
           },
           "jwt": {
             description: "Verify and authenticate JSON Web Tokens"
+          },
+          "signature-verification": {
+            description: "Verify requests signed with signature credentials"
           },
           "ldap-auth": {
             description: "Integrate Kong with a LDAP server"

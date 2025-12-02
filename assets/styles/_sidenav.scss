@@ -45,7 +45,7 @@
     }
     .nav-pills > li.active > a {
 
-      background-color: lighten($brand-royal,5%);
+      background-color: color.adjust($brand-royal, $lightness: 5%);
 
       color: #fff;
       font-weight: bold;
@@ -53,7 +53,7 @@
     .nav-pills > li > a{
 
       &:hover{
-        background-color: lighten($brand-royal,5%);
+        background-color: color.adjust($brand-royal, $lightness: 5%);
       }
 
       color: $gray-lighter;
@@ -65,3 +65,5 @@
   }
 
 }
+@use 'globals' as *;
+@use 'sass:color';

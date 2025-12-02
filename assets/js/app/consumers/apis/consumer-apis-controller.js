@@ -39,12 +39,12 @@
           }
 
 
-          function needsAuth(api) {
-              var authPluginNames = ['basic-auth','key-auth','jwt-auth','oauth2','hmac-auth'];
-              return _.filter(api.plugins.data,function(item){
-                      return authPluginNames.indexOf(item.name) > -1 && item.enabled;
-                  }).length > 0;
-          }
+        function needsAuth(api) {
+          var authPluginNames = ['basic-auth','key-auth','jwt-auth','oauth2','hmac-auth','signature-verification'];
+          return _.filter(api.plugins.data,function(item){
+            return authPluginNames.indexOf(item.name) > -1 && item.enabled;
+          }).length > 0;
+        }
 
           function getGeneralPlugins(api) {
 

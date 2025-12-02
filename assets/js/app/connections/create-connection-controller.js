@@ -18,6 +18,7 @@
                 $scope.node = {
                     type : 'default',
                     jwt_algorithm : 'HS256', // Initialize this anyway so that it can be preselected
+                    skip_tls_verify: false
                 }
 
                 $scope.close = function(){
