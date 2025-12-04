@@ -87,7 +87,6 @@ var KongConsumersController = {
     try {
 
       const nodeInfo = await Kong.info(req.connection);
-      sails.log.debug("KongConsumersController:services:available_on_server", _.get(nodeInfo, 'plugins.available_on_server'));
 
       let jwts = [];
       let keyAuths = [];
