@@ -64,7 +64,6 @@
         ]
 
         $scope.availablePlugins = $rootScope.Gateway.plugins.available_on_server;
-        console.log("Available plugins on server =>", $scope.availablePlugins);
 
         // Remove credentials that are not available on the server
         $scope.credentialGroups = _.filter($scope.credentialGroups, function (item) {
@@ -81,7 +80,6 @@
           }
           return available;
         })
-        console.log("Credential groups after availability filter =>", _.map($scope.credentialGroups, 'id'));
 
         // Fetch the remaining ones
         $scope.credentialGroups.forEach(function (item) {
